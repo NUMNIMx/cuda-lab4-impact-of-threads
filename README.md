@@ -1,46 +1,52 @@
-# Lab 4: The Impact of Threads and Blocks on Processing Speed
+# Lab 4: การศึกษาผลกระทบของ Threads และ Blocks ต่อความเร็วในการประมวลผล (CUDA)
 
-This repository contains CUDA C++ implementations for Lab 4, analyzing the performance impact of different thread and block configurations on GPU processing speed.
+Repository นี้รวบรวม Source Code ภาษา C++ (CUDA) สำหรับการทดลองใน Lab ที่ 4 โดยมีวัตถุประสงค์เพื่อศึกษาว่าการปรับเปลี่ยนจำนวน Threads และ Blocks ของ GPU ส่งผลต่อประสิทธิภาพและความเร็วในการทำงานอย่างไร
 
-## Files
+## รายละเอียดไฟล์โปรแกรม
 
-1.  **`lab4_1_array_add.cu` (Exercise 1.1: Array Addition)**
-    *   Performs vector addition on arrays of size $N=10^6$.
-    *   Compares performance across 128, 256, and 512 threads per block.
-    *   Includes warmup kernel and connection verification.
+ในโปรเจกต์นี้ประกอบด้วย 3 โปรแกรมหลัก ตามหัวข้อการทดลองดังนี้:
 
-2.  **`lab4_2_rms.cu` (Exercise 1.2: Root Mean Square)**
-    *   Calculates RMS of an array ($N=10^6$).
-    *   Uses a **Grid-Stride Loop** and `atomicAdd` to handle arbitrary block sizes.
-    *   Compares performance with fixed threads (256) and varying blocks (32, 64, 128).
+### 1. **`lab4_1_array_add.cu` (ข้อ 1.1: Array Addition)**
+*   **หน้าที่:** โปรแกรมบวกเลขใน Array 2 ตัว ขนาด 1 ล้านช่อง ($N=10^6$)
+*   **การทดลอง:** เปรียบเทียบความเร็วเมื่อกำหนดค่า **Threads per Block** เป็น 128, 256, และ 512
+*   **จุดเด่น:** มีระบบ Warmup แก้ปัญหา Cold Start และระบบตรวจสอบความถูกต้องของผลลัพธ์เทียบกับ CPU
 
-3.  **`lab4_3_sum_array.cu` (Exercise 1.3: SumArray CPU vs GPU)**
-    *   Sums a large array ($N=10^7$).
-    *   Benchmarks GPU performance against CPU execution time.
-    *   Tests specific thread/block scenarios requested in the lab sheet (Question 1-3).
+### 2. **`lab4_2_rms.cu` (ข้อ 1.2: Root Mean Square)**
+*   **หน้าที่:** คำนวณค่า RMS (Root Mean Square) ของข้อมูลใน Array ขนาด 1 ล้านช่อง
+*   **เทคนิคที่ใช้:** ใช้ **Grid-Stride Loop** และ `atomicAdd` ทำให้สามารถรันด้วยจำนวน Block ที่น้อยกว่าจำนวนข้อมูลมากๆ ได้
+*   **การทดลอง:** ล็อคจำนวน Threads ไว้ที่ 256 แล้วลองเปลี่ยนจำนวน **Blocks** เป็น 32, 64, และ 128 เพื่อดูผลกระทบ
 
-## Compilation & Usage
+### 3. **`lab4_3_sum_array.cu` (ข้อ 1.3: SumArray CPU vs GPU)**
+*   **หน้าที่:** หาผลรวมของ Array ขนาดใหญ่ถึง 10 ล้านช่อง ($N=10^7$)
+*   **การทดลอง:** วัดความเร็วเปรียบเทียบกัน "หมัดต่อหมัด" ระหว่าง **CPU** และ **GPU**
+*   **Scenarios:** ทดสอบหลากหลายรูปแบบตามโจทย์ (เช่น เพิ่ม Threads เป็น 1024 หรือลองไล่จำนวน Blocks ตั้งแต่ 128 ถึง 2048) เพื่อหาจุดที่เร็วที่สุดและช้าที่สุด
 
-Each file is standalone and can be compiled using `nvcc`.
+---
 
-### 1. Array Addition
+## วิธีการ Compile และ Run
+
+โปรแกรมทั้งหมดเขียนแยกกันอิสระ สามารถ Compile และรันทีละไฟล์ได้เลยด้วยคำสั่งดังนี้:
+
+### 1. รันการทดลองข้อ 1.1 (Array Addition)
 ```bash
 nvcc lab4_1_array_add.cu -o lab4_1_array_add
 ./lab4_1_array_add
 ```
 
-### 2. RMS Calculation
+### 2. รันการทดลองข้อ 1.2 (RMS Calculation)
 ```bash
 nvcc lab4_2_rms.cu -o lab4_2_rms
 ./lab4_2_rms
 ```
 
-### 3. SumArray Benchmark
+### 3. รันการทดลองข้อ 1.3 (SumArray Benchmark)
 ```bash
 nvcc lab4_3_sum_array.cu -o lab4_3_sum_array
 ./lab4_3_sum_array
 ```
 
-## Requirements
-*   NVIDIA GPU with CUDA capability
-*   CUDA Toolkit (nvcc compiler)
+---
+
+## สิ่งที่ต้องมี (Requirements)
+*   การ์ดจอ NVIDIA ที่รองรับ CUDA
+*   CUDA Toolkit (สำหรับคำสั่ง `nvcc`)
